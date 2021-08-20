@@ -1,74 +1,93 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Weather App</title>
-  </head>
+</head>
 
-  <body>
+<body>
 
     <div class="search__container">
         <p class="search__title">
-          Go ahead, search for city weather
+            Go ahead, search for city weather
         </p>
         <input class="search__input" type="text" placeholder="Search">
     </div>
-    <% var mainView = weather.photo %>
-    <main>
-      <!--Barcelona-->
-      <div class="card" style="width: 18rem;">
-        <img src="<%= mainView %>" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><%= weather.city %>, <%= weather.country %> <img src="" alt="" class="icon"></h5>
-          <p class="card-text">The Heart of Canada</p>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" id="barcelona-temp">Current temperature: <%= weather.temperature %>℃</li>
-          <li class="list-group-item" id="barcelona-feel">Humidity: <%= weather.humidity %>%</li>
-          <li class="list-group-item" id="barcelona-weather">Weather condition: <img alt="Weather Icon" id="barcelona-weather-icon" class="weather-icon" src="http://openweathermap.org/img/wn/<%= weather.icon %>@2x.png"></li>
-        </ul>
-      </div>
+    <main id="main">
     </main>
 
     <!-- <script src="/app.js"></script> -->
 
     <script>
-      $(document).ready(function(){
+        $(document).ready(function() {
+            var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
 
-        if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position)=>{
+            function success(pos) {
+                var {
+                    latitude,
+                    longitude,
+                    // accuracy
+                } = pos.coords;
+                console.log(pos)
+                    // console.log('Your current position is:');
+                console.log(`Latitude : ${latitude}`);
+                console.log(`Longitude: ${longitude}`);
+                // console.log(`More or less ${accuracy} meters.`);
 
-            const { longitude, latitude } = position.coords
+                fetch('/default', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            longitude,
+                            latitude
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data =>generateHtml(data) );
+            }
 
-            console.log('You can send the data here to back-end!')
+            function error(err) {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+            }
 
-            fetch('/send_coordinates', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                longitude, latitude
-              }),
-            })
-            .then(response => response.json())
-            .then(data => {
-              alert('Success:', data);
-            })
-            .catch((error) => {
-              alert('Error:', error);
-            });
-
+            navigator.geolocation.getCurrentPosition(success, error, options);
         })
-        } else {
-            console.log('Geolocation is not supported by this browser.')
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
         }
 
-      })
-      
-    </script>  
-  </body>
+        function generateHtml(data) {
+            document.getElementById('main').innerHTML = `
+              <div class="card" style="width: 18rem;">
+                <img src="${data.photo}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">
+                      ${data.city},
+                      ${data.country} <img src="" alt="" class="icon"></h5>
+                    <p class="card-text">The Heart of Canada</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="barcelona-temp">Current temperature:
+                      ${data.temperature}℃</li>
+                    <li class="list-group-item" id="barcelona-feel">Humidity:
+                      ${data.humidity}%</li>
+                    <li class="list-group-item" id="barcelona-weather">Weather condition: <img alt="Weather Icon" id="barcelona-weather-icon" class="weather-icon" src="http://openweathermap.org/img/wn/${data.icon}@2x.png"></li>
+                </ul>
+            </div>
+              `
+        };
+    </script>
+</body>
+
 </html>
