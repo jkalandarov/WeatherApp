@@ -3,6 +3,14 @@
 body {
     background-color: #d8cccc;
     background-image: url() no-repeat;
+    min-height: 100%;
+}
+
+footer {
+    clear: both;
+    position: relative;
+    height: 200px;
+    margin-top: -200px;
 }
 
 h1, h2, h3, h4, h5, h6{

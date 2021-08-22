@@ -16,12 +16,18 @@
         <p class="search__title">
             Go ahead, search for city weather
         </p>
-        <input class="search__input" type="text" placeholder="Search">
+        <form action="/" method="post">
+            <input class="search__input" type="text" placeholder="Search" name="searchBar">
+        </form>
+        
     </div>
     <main id="main">
     </main>
 
-    <!-- <script src="/app.js"></script> -->
+    <div id="searchCard" style="display: none;">
+    </div>
+
+    <script src="/app.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -54,7 +60,19 @@
                         }),
                     })
                     .then(response => response.json())
-                    .then(data =>generateHtml(data) );
+                    .then(data =>generateHtml(data))
+
+                    fetch('/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            searchData
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => generateSearch(searchData))
             }
 
             function error(err) {
@@ -79,15 +97,36 @@
                         ${data.country} <img src="" alt="" class="icon"></h5>
                         <!--<p class="card-text">The Heart of Canada</p>-->
                     </div>
-                    <p><i class="fas fa-temperature-low"></i>
-                        ${data.temperature}℃ / <i class="fas fa-tint"></i>${data.humidity}% / <img alt="Weather Icon" class="weather-icon" src="http://openweathermap.org/img/wn/${data.icon}@2x.png"></li>
+                    <img alt="Weather Icon" class="weather-icon" src="http://openweathermap.org/img/wn/${data.icon}@2x.png">
+                    <p class="weather-data"><i class="fas fa-temperature-low"></i>
+                        <span class="text-space">${data.temperature}℃</span> / <span class="text-space"><i class="fas fa-tint"></i> ${data.humidity}%</span> / ${data.description}
                     </p>
                 </div>
             </div>
               `
-           
+        };
+
+        function generateSearch(searchData) {
+            document.getElementById('searchCard').innerHTML = `
+              <div class="card" style="background-image: url(${searchData.photo});">
+                <div class="style">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                        ${searchData.city}, ${searchData.country}</h5>
+                    </div>
+                    <img alt="Weather Icon" class="weather-icon" src="http://openweathermap.org/img/wn/${searchData.icon}@2x.png">
+                    <p class="weather-data"><i class="fas fa-temperature-low"></i>
+                        <span class="text-space">${searchData.temperature}℃</span> / <span class="text-space"><i class="fas fa-tint"></i> ${searchData.humidity}%</span> / ${searchData.description}
+                    </p>
+                </div>
+            </div>
+              `
         };
     </script>
 </body>
+
+<footer>
+    <p>created by <a href="https://jkalandarov.github.io/cv/" target="_blank">Jasurbek Kalandarov</a></p>
+</footer>
 
 </html>

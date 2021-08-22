@@ -4,6 +4,12 @@
 body {
     background-repeat: no-repeat !important;
     background-size: cover !important;
+    min-height: 100%;
+}
+
+footer {
+    position: relative;
+    text-align: center;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -20,6 +26,14 @@ main {
 input[type=text] {
     height: 35px;
     width: 300px
+}
+
+.invisible {
+    display: none;
+}
+
+.visible {
+    display: initial;
 }
 
 button[type=submit] {
@@ -44,8 +58,8 @@ button[type=submit]:hover {
 
 .card {
     margin: 10px auto !important;
-    width: 60vw;
-    height: 400px;
+    width: 40vw;
+    height: 350px;
     background-size: cover;
     background-repeat: no-repeat center center;
     position: relative;
@@ -55,7 +69,7 @@ button[type=submit]:hover {
 .style {
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgb(72,0,72,0.8), rgb(192,72,72,0.8));
+    background: linear-gradient(rgb(210,109,146,0.5), rgb(73,136,204,0.4));
     display: inline-block;
     text-align: center;
     align-items: center;
@@ -74,16 +88,28 @@ p{
 }
 
 .weather-icon{
-    width: 35px;
+    width: 100px;
     margin: 0;
 }
 
+.weather-data {
+    font-size: 2em;
+}
+
+.weather-data img {
+    width: 50px;
+}
+
+.text-space {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/*Search Bar*/
 .search__container {
     padding-top: 20px;
     text-align: center;
 }
-
-/*Search Bar*/
 .search__title {
     font-size: 22px;
     font-weight: 900;
@@ -126,4 +152,5 @@ p{
     border-bottom: 1px solid #575756;
     border-radius: 0;
     background-position: 100% center;
+    width: 450px;
 }
