@@ -1,22 +1,35 @@
 const express = require('express');
 const path = require('path')
-const https = require('https');
+const mysql = require('mysql2');
 const app = express();
 const axios = require('axios');
+require('dotenv').config()
 
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '/public')))
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
 
+const cityDB = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: process.env.DB_PASS,
+    database: 'weather_db'
+  })
+  
+//   cityDB.connect()
+
 const getPhotoUrl = (city) => {
-    var photo_key = "l7AecR2HkYSgN5McYcdDHt-9JLpMM6WN3mijUtR-lJQ"
+    var photo_key = process.env.PHOTO_KEY
     var photo_url = `https://api.unsplash.com/search/photos?page=1&query=${city}&client_id=${photo_key}&page=1&per_page=1`
+    
     return photo_url
 }
 
+let db_data ='';
+
 const getWeatherByCoordinates = async(lon, lat) => {
-    let weather_key = "f2a12517c2c9fb2178d509a1d040dba5"
+    let weather_key = process.env.WEATHER_KEY
     let weather_url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weather_key}&units=metric`
 
     const { data: weather_json } = await axios(weather_url)
@@ -63,11 +76,44 @@ const getWeatherByCityName = async(city) => {
         humidity: weather_json.main.humidity,
         icon: weather_json.weather[0].icon,
         photo: photo,
-        description: weather_json.weather[0].description
+        description: weather_json.weather[0].description,
+        mostSearched: {}
     }
 
+    //Creating query variables
+    const updateQuery = `UPDATE city SET search_times = search_times + 1 WHERE city_name = ?;`
+    const insertQuery = `INSERT INTO city(city_name, search_times) VALUES ('${city}', 1);`;
+    
+    //Checking if searched city already exists in the db, if yes updating row, if not adding the city
+    cityDB.query(`select * from city where city_name =? limit 1`,[city], function(err, rows, fields) {
+        
+        //console.log(!!rows.length)
+        if(!!rows.length) {
+            cityDB.query(updateQuery,[city], (err, rows)=>{
+                if (err) throw err
+                console.log("Successfully updated TABLE")
+            })
+            
+        } else {
+            cityDB.query(insertQuery,(err, rows)=>{
+                if (err) throw err;
+                console.log("Successfully inserted data");
+            })
+        }
+        
+        cityDB.query('SELECT * FROM city order by search_times desc limit 10;', (err, rows)=>{
+            if (err) throw err;
+            db_data = rows;
+            weather.mostSearched = rows
+            //console.log(weather)
+        })
+        
+    })
+     
     return weather;
 }
+
+
 
 app.get("/", (req, res) => {
 
@@ -76,7 +122,7 @@ app.get("/", (req, res) => {
 
 app.post('/cityname', async(req, res) => {
     let data = await getWeatherByCityName(req.body.cityName)
-        // console.log(data)
+    console.log(data)
     return res.json(data);
 
 })
@@ -87,7 +133,6 @@ app.post("/default", async(req, res) => {
 
     let data = await getWeatherByCoordinates(longitude, latitude)
 
-    //console.log(data)
     return res.json(data);
 })
 

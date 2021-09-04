@@ -21,6 +21,11 @@ h1, h2, h3, h4, h5, h6{
 main {
     padding: 2% 12%;
     font-family: 'Noto Sans HK', sans-serif;
+    margin: 10px auto !important;
+}
+
+.searchCard {
+    margin: 10px auto !important;
 }
 
 input[type=text] {
@@ -59,7 +64,7 @@ button[type=submit]:hover {
 .card {
     margin: 10px auto !important;
     width: 40vw;
-    height: 350px;
+    height: 50vh;
     background-size: cover;
     background-repeat: no-repeat center center;
     position: relative;
@@ -73,6 +78,7 @@ button[type=submit]:hover {
     display: inline-block;
     text-align: center;
     align-items: center;
+    margin: 0 auto !important;
 }
 
 .card-text {
