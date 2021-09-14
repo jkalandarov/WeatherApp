@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <title>Weather App</title>
+</head>
+
+<body>
+
+    <div class="search__container">
+        <p class="search__title">
+            Go ahead, search for city weather
+        </p>
+        <form method="post" id="searchCity">
+            <input id="cityName" class="search__input" type="text" placeholder="Search" name="searchBar">
+        </form>
+
+    </div>
+    <main id="main">
+    </main>
+
+    <div id="searchCard" style="display: none;">
+    </div>
+
+    <div id="bestCities">
+        <h2 class="table_header">Most searched cities</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>City name</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Weather condition</th>
+                </tr>
+            </thead>
+            <% for (let i = 0; i < topCityWeather.length; i++) { %>
+                <tr>
+                    <td><%= i+1 %></td>
+                    <td><%= topCityWeather[i].city %></td>
+                    <td><%= topCityWeather[i].temperature + '℃' %></td>
+                    <td><%= topCityWeather[i].humidity + '%' %></td>
+                    <td><%= topCityWeather[i].description %></td>
+                </tr>
+            <% } %>
+
+        </table>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+
+<footer>
+    <p>created by <a href="https://jkalandarov.github.io/cv/" target="_blank"> Jasurbek Kalandarov</a></p>
+</footer>
+
+</html>
