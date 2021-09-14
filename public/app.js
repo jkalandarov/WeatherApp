@@ -66,15 +66,14 @@ function error(err) {
 }
 
 function generateHtml(data) {
+    console.log(data)
     document.getElementById('main').innerHTML = `
       <div class="card" style="background-image: url(${data.photo});">
         <div class="style">
-            <!--<img src="${data.photo}" class="card-img-top" alt="...">-->
             <div class="card-body">
                 <h5 class="card-title">
                 ${data.city},
                 ${data.country} <img src="" alt="" class="icon"></h5>
-                <!--<p class="card-text">The Heart of Canada</p>-->
             </div>
             <img alt="Weather Icon" class="weather-icon" src="http://openweathermap.org/img/wn/${data.icon}@2x.png">
             <p class="weather-data"><i class="fas fa-temperature-low"></i>
@@ -99,5 +98,27 @@ function generateSearch(searchData) {
             </p>
         </div>
     </div>
+      `
+};
+
+function listCities(data) {
+    document.getElementById('data').innerHTML = `
+    <h2>Most searched cities</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>City name</th>
+                <th>Temperature</th>
+                <th>Humidity</th>
+                <th>Weather condition</th>
+            </tr>
+        </thead>
+        
+        <tr>
+            <td>${data.mostSearched[0]}</td>
+        </tr>
+
+    </table>
       `
 };
